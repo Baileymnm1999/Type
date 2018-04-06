@@ -77,7 +77,6 @@ switch i
 end
 set(handles.story, 'string', loadText);
 loadText = string(loadText).split(' ');
-disp(loadText(10));
 
 % UIWAIT makes typetest wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -103,9 +102,23 @@ global loadText;
 
 % Hints: get(hObject,'String') returns contents of interaction as text
 %        str2double(get(hObject,'String')) returns contents of interaction as a double
-if get(handles.interaction, 'string') == loadText(1) || get(handles.interaction, 'string') == "Press [ENTER] to Begin" 
-    set(handles.interaction, 'string', '');
+
+inputText = get(handles.interaction, 'string');
+inputText = string(inputText).split(' ');
+numCorrect = 0;
+while max(size(inputText)) > max(size(loadText))
+    inputText(max(size(loadText)) + 1) = [];
 end
+
+
+for i=1:size(inputText)
+    if inputText(i) == loadText(i)
+        numCorrect = numCorrect + 1;
+    end
+end
+
+set(handles.interaction, 'string', "Accuracy = " + string(round(100 * numCorrect/max(size(loadText)), 2)) + "%")
+   
 
 
 % --- Executes during object creation, after setting all properties.
