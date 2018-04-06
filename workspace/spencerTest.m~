@@ -25,22 +25,22 @@ function varargout = spencerTest(varargin)
 % Last Modified by GUIDE v2.5 05-Apr-2018 13:31:44
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @spencerTest_OpeningFcn, ...
-                   'gui_OutputFcn',  @spencerTest_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
-if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
-end
+    gui_Singleton = 1;
+    gui_State = struct('gui_Name',       mfilename, ...
+                        'gui_Singleton',  gui_Singleton, ...
+                        'gui_OpeningFcn', @spencerTest_OpeningFcn, ...
+                        'gui_OutputFcn',  @spencerTest_OutputFcn, ...
+                        'gui_LayoutFcn',  [] , ...
+                        'gui_Callback',   []);
+    if nargin && ischar(varargin{1})
+        gui_State.gui_Callback = str2func(varargin{1});
+    end
 
-if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
-else
-    gui_mainfcn(gui_State, varargin{:});
-end
+    if nargout
+        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    else
+        gui_mainfcn(gui_State, varargin{:});
+    end
 % End initialization code - DO NOT EDIT
 
 
@@ -53,18 +53,18 @@ function spencerTest_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to spencerTest (see VARARGIN)
 
 % Choose default command line output for spencerTest
-handles.output = hObject;
+    handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-apache = fileread('../res/copyPastas/apache.txt');
-beeMovie = fileread('../res/copyPastas/beeMovie.txt');
-navySeal = fileread('../res/copyPastas/navySeal.txt');
-safetyDance = fileread('../res/copyPastas/safetyDance.txt');
-tragedy = fileread('../res/copyPastas/tragedy.txt');
-rng shuffle;
-j = randi(5);
+apache = fileread('../res/copyPastas/apache.txt')
+beeMovie = fileread('../res/copyPastas/beeMovie.txt')
+navySeal = fileread('../res/copyPastas/navySeal.txt')
+safetyDance = fileread('../res/copyPastas/safetyDance.txt')
+tragedy = fileread('../res/copyPastas/tragedy.txt')
+rng shuffle; % change this to equal time.time()
+j = randi(5 );
 switch(j)
     case 1
         set(handles.prompt, 'string', apache);
@@ -77,6 +77,7 @@ switch(j)
     case 5
         set(handles.prompt, 'string', tragedy);
 end
+
 
 % UIWAIT makes spencerTest wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
