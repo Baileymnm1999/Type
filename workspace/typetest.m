@@ -24,7 +24,7 @@ function varargout = typetest(varargin)
 
 % Edit the above text to modify the response to help typetest
 
-% Last Modified by GUIDE v2.5 06-Apr-2018 13:22:44
+% Last Modified by GUIDE v2.5 07-Apr-2018 12:14:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -140,3 +140,28 @@ function interaction_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to interaction (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in shuffle.
+function shuffle_Callback(hObject, eventdata, handles)
+global loadText;
+% hObject    handle to shuffle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+rng shuffle;
+i = randi(5);
+switch i
+    case 1 
+        loadText = fileread('../res/copyPastas/apache.txt');
+    case 2
+        loadText = fileread('../res/copyPastas/beeMovie.txt');
+    case 3
+        loadText = fileread('../res/copyPastas/navySeal.txt');
+    case 4
+        loadText = fileread('../res/copyPastas/safetyDance.txt');
+    case 5
+        loadText = fileread('../res/copyPastas/tragedy.txt');
+end
+set(handles.story, 'string', loadText);
+set(handles.interaction, 'string', '');
+loadText = string(loadText).split(' ');
