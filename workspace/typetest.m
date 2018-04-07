@@ -102,23 +102,26 @@ global loadText;
 
 % Hints: get(hObject,'String') returns contents of interaction as text
 %        str2double(get(hObject,'String')) returns contents of interaction as a double
-
 inputText = get(handles.interaction, 'string');
-inputText = string(inputText).split(' ');
-numCorrect = 0;
-while max(size(inputText)) > max(size(loadText))
-    inputText(max(size(loadText)) + 1) = [];
-end
-
-
-for i=1:size(inputText)
-    if inputText(i) == loadText(i)
-        numCorrect = numCorrect + 1;
+if inputText == "(Press [ENTER] to start)"
+    set(handles.interaction, 'string', "")
+    tic;
+else
+    minutesElapsed = toc / 60;
+    inputText = string(inputText).split(' ');
+    numCorrect = 0; 
+    while max(size(inputText)) > max(size(loadText))
+        inputText(max(size(loadText)) + 1) = [];
     end
+    for i=1:size(inputText)
+        if inputText(i) == loadText(i)
+            numCorrect = numCorrect + 1;
+        end
+    end
+    WPM = string(round(numCorrect / minutesElapsed, 2));
+    set(handles.results, 'string', "Accuracy = " + string(round(100 * numCorrect/max(size(loadText)), 2)) + "%" + newline + "WPM = " + WPM)
 end
 
-set(handles.interaction, 'string', "Accuracy = " + string(round(100 * numCorrect/max(size(loadText)), 2)) + "%")
-   
 
 
 % --- Executes during object creation, after setting all properties.
@@ -163,5 +166,6 @@ switch i
         loadText = fileread('../res/copyPastas/tragedy.txt');
 end
 set(handles.story, 'string', loadText);
-set(handles.interaction, 'string', '');
+set(handles.interaction, 'string', '(Press [ENTER] to start)');
+set(handles.results, 'string', '');
 loadText = string(loadText).split(' ');

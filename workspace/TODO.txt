@@ -1,0 +1,2 @@
+Spencer: make a way to load WPM and accuaracy into a file, and allow the user to visit their high scores, 
+        also let them know if they just beat their high score right after submitting their test to be "graded" (by results)
