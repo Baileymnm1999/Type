@@ -24,7 +24,7 @@ function varargout = typetest(varargin)
 
 % Edit the above text to modify the response to help typetest
 
-% Last Modified by GUIDE v2.5 07-Apr-2018 12:14:37
+% Last Modified by GUIDE v2.5 10-Apr-2018 12:27:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -77,7 +77,10 @@ switch i
 end
 set(handles.story, 'string', loadText);
 loadText = string(loadText).split(' ');
-
+% Below is to display the top five WPM and Acc
+accuracy = fileread('Accuracy.txt');
+wpm = fileread('WPM.txt');
+% TODO: READ FILE AND SET wpmHigh AND accHigh TO TOP SCORES
 % UIWAIT makes typetest wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -96,6 +99,7 @@ varargout{1} = handles.output;
 
 function interaction_Callback(hObject, eventdata, handles)
 global loadText;
+global testRestart;
 % hObject    handle to interaction (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -106,22 +110,33 @@ inputText = get(handles.interaction, 'string');
 if inputText == "(Press [ENTER] to start)"
     set(handles.interaction, 'string', "")
     tic;
+    testRestart = 0;
 else
-    minutesElapsed = toc / 60;
-    inputText = string(inputText).split(' ');
-    numCorrect = 0; 
-    while max(size(inputText)) > max(size(loadText))
-        inputText(max(size(loadText)) + 1) = [];
-    end
-    for i=1:size(inputText)
-        if inputText(i) == loadText(i)
-            numCorrect = numCorrect + 1;
+    testRestart = testRestart + 1;
+    if testRestart == 1
+        minutesElapsed = toc / 60;
+        inputText = string(inputText).split(' ');
+        numCorrect = 0; 
+        while max(size(inputText)) > max(size(loadText))
+            inputText(max(size(loadText)) + 1) = [];
+        end
+        for i=1:size(inputText)
+            if inputText(i) == loadText(i)
+                numCorrect = numCorrect + 1;
+            end
+        end
+        WPM = string(round(numCorrect / minutesElapsed, 2));
+        set(handles.results, 'string', "Accuracy = " + string(round(100 * numCorrect/max(size(loadText)), 2)) + "%" + newline + "WPM = " + WPM)
+        if round(100 * numCorrect/max(size(loadText)), 2) > 30 % Only writes to files if accuracy is greater than 30%
+            WPMFile = fopen('WPM.txt','a');
+            fprintf(WPMFile, '%0.2f\n', WPM);
+            fclose(WPMFile);
+            AccFile = fopen('Accuracy.txt', 'a');
+            fprintf(AccFile, '%0.2f\n', 100 * numCorrect/max(size(loadText)));
+            fclose(AccFile);
         end
     end
-    WPM = string(round(numCorrect / minutesElapsed, 2));
-    set(handles.results, 'string', "Accuracy = " + string(round(100 * numCorrect/max(size(loadText)), 2)) + "%" + newline + "WPM = " + WPM)
 end
-
 
 
 % --- Executes during object creation, after setting all properties.
@@ -169,3 +184,17 @@ set(handles.story, 'string', loadText);
 set(handles.interaction, 'string', '(Press [ENTER] to start)');
 set(handles.results, 'string', '');
 loadText = string(loadText).split(' ');
+
+
+% --- Executes on button press in wpmHS.
+function wpmHS_Callback(hObject, eventdata, handles)
+% hObject    handle to wpmHS (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in accHS.
+function accHS_Callback(hObject, eventdata, handles)
+% hObject    handle to accHS (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
