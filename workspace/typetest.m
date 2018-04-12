@@ -77,9 +77,12 @@ switch i
 end
 set(handles.story, 'string', loadText);
 loadText = string(loadText).split(' ');
-% Below is to display the top five WPM and Acc
-accuracy = fileread('Accuracy.txt');
-wpm = fileread('WPM.txt');
+wpmHS_Callback(handles.wpmHS, eventdata, handles)
+
+
+    
+
+
 % TODO: READ FILE AND SET wpmHigh AND accHigh TO TOP SCORES
 % UIWAIT makes typetest wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -134,6 +137,7 @@ else
             AccFile = fopen('Accuracy.txt', 'a');
             fprintf(AccFile, '%0.2f\n', 100 * numCorrect/max(size(loadText)));
             fclose(AccFile);
+            wpmHS_Callback(handles.wpmHS, eventdata, handles)
         end
     end
 end
@@ -191,10 +195,14 @@ function wpmHS_Callback(hObject, eventdata, handles)
 % hObject    handle to wpmHS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+acc = dlmread('Accuracy.txt', '\n');
+wpm = dlmread('WPM.txt', '\n');
+wpmSorted = flip(sort(wpm));
+[~,wpmInd] = ismember(wpmSorted, wpm);
+wpmAcc = [];
+for i=1:5
+    wpmAcc = [wpmAcc, acc(wpmInd(i))];
+end
+set(handles.wpmWpm, 'string', "WPM" + newline + wpmSorted(1) + newline + wpmSorted(2) + newline + wpmSorted(3) + newline + wpmSorted(4) + newline + wpmSorted(5)) 
+set(handles.wpmAcc, 'string', "Acc" + newline + wpmAcc(1) + "%" + newline + wpmAcc(2) + "%" + newline + wpmAcc(3) + "%" + newline + wpmAcc(4) + "%" + newline + wpmAcc(5) + "%")
 
-
-% --- Executes on button press in accHS.
-function accHS_Callback(hObject, eventdata, handles)
-% hObject    handle to accHS (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
