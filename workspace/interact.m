@@ -63,16 +63,22 @@ guidata(hObject, handles);
 
 axes(handles.handsimg);
 imshow('../res/img/hands.png');
-
-
-
-loadText = fileread('../res/copyPastas/guide.txt');
-
+rng shuffle;
+i = randi(5);
+switch i
+    case 1 
+        loadText = fileread('../res/copyPastas/apache.txt');
+    case 2
+        loadText = fileread('../res/copyPastas/beeMovie.txt');
+    case 3
+        loadText = fileread('../res/copyPastas/navySeal.txt');
+    case 4
+        loadText = fileread('../res/copyPastas/safetyDance.txt');
+    case 5
+        loadText = fileread('../res/copyPastas/tragedy.txt');
+end
 set(handles.story, 'string', loadText);
-%loadText = string(loadText).split(' ');
-% Below is to display the top five WPM and Acc
-accuracy = fileread('Accuracy.txt');
-wpm = fileread('WPM.txt');
+set(handles.interaction, 'string', '(Press [ENTER] to start)');
 % TODO: READ FILE AND SET wpmHigh AND accHigh TO TOP SCORES
 % UIWAIT makes interact wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -131,16 +137,20 @@ elseif length(get(handles.interaction, 'string')) == length(convertStringsToChar
     end
 else
     newText = get(handles.interaction, 'string');
+    warned = 0;
     for i = 1:length(newText)
-        if newText(i) ~= loadText(i) && i > 1
-            set(handles.interaction, 'string', newText(1:i-1));
-            uicontrol(handles.handsimg);
-            break;
-        elseif newText(i) ~= loadText(i) && ~(i > 1)
-            set(handles.interaction, 'string', '');
+        if newText(i) ~= loadText(i) && warned == 0 
+            for i=1:3
+               set(handles.incorrect, 'String', "Incorrect Input!!")
+               pause(0.2)
+               set(handles.incorrect, 'String', "")
+               pause(0.2)
+            end
+            warned = 1;
+            break
         end
     end
-    if length(newText) < length(loadText)
+    if length(newText) < length(loadText) && warned == 0
         lowerText = lower(loadText);
         myChar = lowerText(length(newText)+1);
         x = randi(5)-1;
@@ -252,19 +262,3 @@ switch i
 end
 set(handles.story, 'string', loadText);
 set(handles.interaction, 'string', '(Press [ENTER] to start)');
-set(handles.results, 'string', '');
-loadText = string(loadText).split(' ');
-
-
-% --- Executes on button press in wpmHS.
-function wpmHS_Callback(hObject, eventdata, handles)
-% hObject    handle to wpmHS (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in accHS.
-function accHS_Callback(hObject, eventdata, handles)
-% hObject    handle to accHS (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)

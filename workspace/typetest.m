@@ -24,7 +24,7 @@ function varargout = typetest(varargin)
 
 % Edit the above text to modify the response to help typetest
 
-% Last Modified by GUIDE v2.5 10-Apr-2018 12:27:48
+% Last Modified by GUIDE v2.5 18-Apr-2018 23:34:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -49,6 +49,9 @@ end
 % --- Executes just before typetest is made visible.
 function typetest_OpeningFcn(hObject, eventdata, handles, varargin)
 global loadText;
+global a;
+global b;
+[a, b] = audioread('../res/safetyDance.mp3');
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -77,7 +80,18 @@ switch i
 end
 set(handles.story, 'string', loadText);
 loadText = string(loadText).split(' ');
-wpmHS_Callback(handles.wpmHS, eventdata, handles)
+acc = dlmread('Accuracy.txt', '\n');
+wpm = dlmread('WPM.txt', '\n');
+wpmSorted = flip(sort(wpm));
+[~,wpmInd] = ismember(wpmSorted, wpm);
+wpmAcc = [];
+for i=1:5
+    wpmAcc = [wpmAcc, acc(wpmInd(i))];
+end
+set(handles.wpmWpm, 'string', "WPM" + newline + wpmSorted(1) + newline + wpmSorted(2) + newline + wpmSorted(3) + newline + wpmSorted(4) + newline + wpmSorted(5)) 
+set(handles.wpmAcc, 'string', "Acc" + newline + wpmAcc(1) + "%" + newline + wpmAcc(2) + "%" + newline + wpmAcc(3) + "%" + newline + wpmAcc(4) + "%" + newline + wpmAcc(5) + "%")
+
+
 
 
     
@@ -130,7 +144,7 @@ else
         end
         WPM = string(round(numCorrect / minutesElapsed, 2));
         set(handles.results, 'string', "Accuracy = " + string(round(100 * numCorrect/max(size(loadText)), 2)) + "%" + newline + "WPM = " + WPM)
-        if round(100 * numCorrect/max(size(loadText)), 2) > 30 % Only writes to files if accuracy is greater than 30%
+        if round(100 * numCorrect/max(size(loadText)), 2) > 50 % Only writes to files if accuracy is greater than 50%
             WPMFile = fopen('WPM.txt','a');
             fprintf(WPMFile, '%0.2f\n', WPM);
             fclose(WPMFile);
@@ -167,6 +181,8 @@ function interaction_ButtonDownFcn(hObject, eventdata, handles)
 % --- Executes on button press in shuffle.
 function shuffle_Callback(hObject, eventdata, handles)
 global loadText;
+global a;
+global b;
 % hObject    handle to shuffle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -174,14 +190,20 @@ rng shuffle;
 i = randi(5);
 switch i
     case 1 
+        clear sound;
         loadText = fileread('../res/copyPastas/apache.txt');
     case 2
+        clear sound;
         loadText = fileread('../res/copyPastas/beeMovie.txt');
     case 3
+        clear sound;
         loadText = fileread('../res/copyPastas/navySeal.txt');
     case 4
+        clear sound;
         loadText = fileread('../res/copyPastas/safetyDance.txt');
+        sound(a,  b);
     case 5
+        clear sound;
         loadText = fileread('../res/copyPastas/tragedy.txt');
 end
 set(handles.story, 'string', loadText);
@@ -190,19 +212,24 @@ set(handles.results, 'string', '');
 loadText = string(loadText).split(' ');
 
 
-% --- Executes on button press in wpmHS.
-function wpmHS_Callback(hObject, eventdata, handles)
-% hObject    handle to wpmHS (see GCBO)
+% --- Executes on slider movement.
+function fontSlider_Callback(hObject, eventdata, handles)
+% hObject    handle to fontSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-acc = dlmread('Accuracy.txt', '\n');
-wpm = dlmread('WPM.txt', '\n');
-wpmSorted = flip(sort(wpm));
-[~,wpmInd] = ismember(wpmSorted, wpm);
-wpmAcc = [];
-for i=1:5
-    wpmAcc = [wpmAcc, acc(wpmInd(i))];
-end
-set(handles.wpmWpm, 'string', "WPM" + newline + wpmSorted(1) + newline + wpmSorted(2) + newline + wpmSorted(3) + newline + wpmSorted(4) + newline + wpmSorted(5)) 
-set(handles.wpmAcc, 'string', "Acc" + newline + wpmAcc(1) + "%" + newline + wpmAcc(2) + "%" + newline + wpmAcc(3) + "%" + newline + wpmAcc(4) + "%" + newline + wpmAcc(5) + "%")
 
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+set(handles.story, 'FontSize', get(handles.fontSlider, 'Value'))
+set(handles.interaction, 'FontSize', get(handles.fontSlider, 'Value'))
+
+% --- Executes during object creation, after setting all properties.
+function fontSlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fontSlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
