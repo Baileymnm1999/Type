@@ -22,7 +22,7 @@ function varargout = launcher(varargin)
 
 % Edit the above text to modify the response to help launcher
 
-% Last Modified by GUIDE v2.5 12-Apr-2018 13:09:54
+% Last Modified by GUIDE v2.5 19-Apr-2018 12:35:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,6 +85,7 @@ function interactButt_Callback(hObject, eventdata, handles)
 % hObject    handle to interactButt (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+interact;
 
 
 % --- Executes on button press in testButt.
