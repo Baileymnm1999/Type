@@ -151,7 +151,17 @@ else
             AccFile = fopen('Accuracy.txt', 'a');
             fprintf(AccFile, '%0.2f\n', 100 * numCorrect/max(size(loadText)));
             fclose(AccFile);
-            wpmHS_Callback(handles.wpmHS, eventdata, handles)
+            acc = dlmread('Accuracy.txt', '\n');
+            wpm = dlmread('WPM.txt', '\n');
+            wpmSorted = flip(sort(wpm));
+            [~,wpmInd] = ismember(wpmSorted, wpm);
+            wpmAcc = [];
+            for i=1:5
+                wpmAcc = [wpmAcc, acc(wpmInd(i))];
+            end
+            set(handles.wpmWpm, 'string', "WPM" + newline + wpmSorted(1) + newline + wpmSorted(2) + newline + wpmSorted(3) + newline + wpmSorted(4) + newline + wpmSorted(5)) 
+            set(handles.wpmAcc, 'string', "Acc" + newline + wpmAcc(1) + "%" + newline + wpmAcc(2) + "%" + newline + wpmAcc(3) + "%" + newline + wpmAcc(4) + "%" + newline + wpmAcc(5) + "%")
+
         end
     end
 end
