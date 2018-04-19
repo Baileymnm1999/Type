@@ -51,7 +51,7 @@ function typetest_OpeningFcn(hObject, eventdata, handles, varargin)
 global loadText;
 global a;
 global b;
-[a, b] = audioread('../res/safetyDance.mp3');
+[a, b] = audioread('../res/safetyDance.wav');
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
